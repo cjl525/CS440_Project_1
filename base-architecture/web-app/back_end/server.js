@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import login_routes from './login_routes.js';
+import authRoutes from './routes/authRoutes.js';
 
 const app = express();
 const PORT = 3000;
@@ -11,7 +11,7 @@ app.use(express.json());
 
 
 
-app.use('/api', login_routes);
+app.use('/api', authRoutes);
 
 
 // listen on port 3000
