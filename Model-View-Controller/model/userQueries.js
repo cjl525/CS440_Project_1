@@ -1,11 +1,11 @@
 // userQueries
 // This module contains ONLY queries that the user can make to the database
 
-import pool from '../db/pool.js';
+import pool from '../model/database.js';
 
 const userQueries = {
 
-	
+
 	// Login page query
 	async login(username, password) {
 		const result = await pool.query(

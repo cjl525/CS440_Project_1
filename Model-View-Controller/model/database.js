@@ -14,3 +14,5 @@ pool.connect()
   .catch((err) => console.error('Error connecting to PostgreSQL database:', err));
 
 export default pool;
+
+
