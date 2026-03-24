@@ -1,40 +1,40 @@
-// login routes
+// Login routes
+// This module contains route handlers for the login and account creation pages
+
 import express from 'express';
+import userQueries from '../model/userQueries.js';
+
 const router = express.Router();
-import pool from '../model/database.js';
+
 
 // Login route
-router.post('/login', async (req, res) => {
-  const { username, password } = req.body;
-	  try {
-		const result = await pool.query(
-			'SELECT * FROM users WHERE username = $1 AND password = $2',
-			[username, password]
-		);
-		if (result.rows.length > 0) {
-			res.status(200).json({ message: 'Login successful' });
+export const login = async (req, res) => {
+	const { username, password } = req.body;
+
+	try { 
+		const user = await userQueries.login(username, password);
+		if (user) {
+			res.status(200).json({ message: 'Login successful', user });
 		} else {
-			res.status(401).json({ message: 'Invalid credentials' });
+			res.status(401).json({ message: 'Invalid username or password' });
 		}
 	} catch (error) {
 		console.error('Error during login:', error);
-		res.status(500).json({ message: 'Internal server error' });
+		return res.status(500).json({ message: 'Internal server error' });
 	}
-});
+};
 
-// Create new user route
-router.post('/register', async (req, res) => {
-  const { username, password } = req.body;
-  try {
-	const result = await pool.query(	
-		'INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *',
-		[username, password]
-	);
-	res.status(201).json({ message: 'User registered successfully', user: result.rows[0] });
-  } catch (error) {
-	console.error('Error during registration:', error);
-	res.status(500).json({ message: 'Internal server error' });
-  }
-});
+// Registration route
+export const register = async (req, res) => { 
+	const { username, password } = req.body;
 
-export default router;
+	try { 
+		const newUser = await userQueries.createUser(username, password);
+
+		return res.status(201).json({ message: 'User created successfully', user: newUser });
+	} catch (error) {
+		console.error('Error during registration:', error);
+		return res.status(500).json({ message: 'Internal server error' });
+	}
+};
+
